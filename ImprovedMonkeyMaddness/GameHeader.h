@@ -16,16 +16,16 @@
 #define WIN32_EXTRA_LEAN
 #define DIRECTINPUT_VERSION 0x0800
 
-// #include <cstdlib>		// standard lib just for general principle
+#include <cstdlib>		// standard lib just for general principle
 #include <iostream>		// access cin, cout
 #include <iomanip>		// access manipulators for data formatting
 #include <windows.h>	// access components for windows programming
-//#include <time.h>		// access time and clock functions
+#include <time.h>		// access time and clock functions
 #include <d3d9.h>		// directX
 #include <d3dx9.h>		// directX extensions
-#include <dinput.h>		// access direct input
-//#include <xinput.h>		// xbox controller support
-#include <ctime>		// time functions for random number seeds
+#include <dinput.h>		// access direct 
+#include <stdio.h>		//this and next for itoa function
+#include <stdlib.h>
 
 using namespace std;
 
@@ -60,6 +60,40 @@ extern LPDIRECT3DDEVICE9 d3ddev;
 extern LPDIRECT3DSURFACE9 backbuffer;
 extern LPD3DXSPRITE spriteObj;
 
+//Structs and Typedefs
+struct SPRITE /*game sprite structure*/
+{
+    float x,y;
+	int frame, columns;
+	int width, height; //width and height of image
+	float scaling, rotation;
+	int startframe, endframe;
+	int starttime, delay;
+	int direction; //enum values for left and right
+	float velx, vely, modVelx, modVely; //movement speed
+	D3DCOLOR color;
+
+    SPRITE() //constructor with default values
+    {
+        frame = 0;
+        columns = 1;
+		width = height = 0;
+		scaling = 1.0f;
+		rotation = 0.0f;
+		startframe = endframe = 0;
+		direction = RIGHT;
+		starttime = delay = 0;
+		velx = vely = 0.0f;
+		color = D3DCOLOR_XRGB(255, 255, 255);
+    }
+
+	void randReset()
+	{
+		x = (float)(rand()%(SCREENW-128));
+		y = 0;
+	}
+};
+
 //Direct3D functions
 bool Direct3D_Init(HWND hwnd, int width, int height, bool fullscreen);
 void Direct3D_Shutdown();
@@ -84,6 +118,8 @@ void Sprite_Transform_Draw(LPDIRECT3DTEXTURE9 image, int x, int y, int width, in
 						   D3DCOLOR color=D3DCOLOR_XRGB(255,255,255));
 double toRadians(double degrees);
 double toDegrees(double radians);
+int Collision(SPRITE sprite1, SPRITE sprite2);
+bool CollisionD(SPRITE sprite1, SPRITE sprite2);
 
 //DirectInput objects, devices, and states
 extern LPDIRECTINPUT8 dinput;
@@ -100,34 +136,9 @@ int Mouse_Button(int);
 int Mouse_X();
 int Mouse_Y();
 
-struct SPRITE /*game sprite structure*/
-{
-    float x,y;
-	int frame, columns;
-	int width, height; //width and height of image
-	float scaling, rotation;
-	int startframe, endframe;
-	int starttime, delay;
-	int direction; //enum values for left and right
-	float velx, vely; //movement speed
-	D3DCOLOR color;
-
-    SPRITE() //constructor with default values
-    {
-        frame = 0;
-        columns = 1;
-		width = height = 0;
-		scaling = 1.0f;
-		rotation = 0.0f;
-		startframe = endframe = 0;
-		direction = RIGHT;
-		starttime = delay = 0;
-		velx = vely = 0.0f;
-		color = D3DCOLOR_XRGB(255, 255, 255);
-    }
-};
-
-int Collision(SPRITE sprite1, SPRITE sprite2);
+//font functions
+LPD3DXFONT MakeFont (string name, int size);
+void FontPrint (LPD3DXFONT font, int x, int y, string text, D3DCOLOR = D3DCOLOR_XRGB(0,0,0));
 
 //game functions
 	//Game initialization function

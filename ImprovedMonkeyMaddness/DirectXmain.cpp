@@ -264,6 +264,42 @@ int Collision(SPRITE sprite1, SPRITE sprite2)
 	return IntersectRect(&dest, &rect1, &rect2);
 }
 
+//Distance Based Collision Detection
+bool CollisionD(SPRITE sprite1, SPRITE sprite2)
+{
+	double radius1, radius2;
+
+	//calculate radiius 1
+	if(sprite1.width > sprite1.height)
+		radius1 = (sprite1.width*sprite1.scaling)/2.0;
+	else 
+		radius1 = (sprite1.height*sprite1.scaling)/2.0;
+
+	//center point 1
+	double x1=sprite1.x+radius1;
+	double y1=sprite1.y+radius1;
+	D3DXVECTOR2 vector1(x1, y1);
+
+	//calculate radius 2
+	if(sprite2.width > sprite2.height)
+		radius2 = (sprite2.width*sprite2.scaling)/2.0;
+	else 
+		radius2 = (sprite2.height*sprite2.scaling)/2.0;
+
+	//center point 2
+	double x2=sprite2.x+radius2;
+	double y2=sprite2.y+radius2;
+	D3DXVECTOR2 vector2(x2, y2);
+
+	//calculate distance
+	double deltax = vector1.x - vector2.x;
+	double deltay = vector2.y - vector1.y;
+	double dist = sqrt((deltax*deltax)+(deltay+deltay));
+
+	//return distance comparison
+	return (dist<radius1+radius2);
+}
+
 // DirectInput initialization
 bool DirectInput_Init(HWND hwnd)
 {
@@ -323,6 +359,29 @@ int Mouse_Button(int button)
 int Key_Down(int key)
 {
     return (keys[key] & 0x80);
+}
+
+//Font functions
+LPD3DXFONT MakeFont(string name, int size)
+{
+	LPD3DXFONT font = NULL;
+	D3DXFONT_DESC desc = 
+	{
+		size, 0, 0, 0, false, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_PITCH, ""
+	};
+	strcpy(desc.FaceName, name.c_str());
+	D3DXCreateFontIndirect(d3ddev, &desc, &font);
+	return font;
+}
+
+void FontPrint(LPD3DXFONT font, int x, int y, string text, D3DCOLOR color)
+{
+	//figure out the text boundary
+	RECT rect={x, y, 0, 0};
+	font->DrawText(NULL, text.c_str(), text.length(), &rect, DT_CALCRECT, color);
+
+	//print the text
+	font->DrawText(NULL, text.c_str(), text.length(), &rect, DT_LEFT, color);
 }
 
 //DirectInput shutdown
