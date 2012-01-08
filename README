@@ -1,0 +1,7 @@
+This is the "Monkey Madness" c++ game originally designed and coded by Liam Boyle liampboyle@gmail.com background image and Combat Hippie Productions logo designed by LouAnn Boyle.
+
+I wrote this game based on the idea presented to me by my son, Drustan.  He wanted a game with a monkey throwing bananas at a tiger, so that's what I made.
+
+While all the base code has been written already, the game still needs sound, I want to add some transform draw so that the tiger goes from smaller to larger starting at the horizon line to give a pseudo-3d effect, and finally, I want to port this entire game to several different platforms starting with an android app edition.
+
+8 Jan 2012
